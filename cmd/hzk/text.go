@@ -44,6 +44,7 @@ func newTextCommand(stdin *os.File, stdout io.Writer) *cobra.Command {
 				GlyphSpacing: opts.glyphSpacing,
 				LineSpacing:  opts.lineSpacing,
 				CellWidth:    opts.cellWidth,
+				DisableWiden: opts.disableWiden,
 			})
 			if err != nil {
 				return err

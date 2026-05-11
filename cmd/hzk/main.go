@@ -16,6 +16,7 @@ type commonOptions struct {
 	glyphSpacing int
 	lineSpacing  int
 	cellWidth    int
+	disableWiden bool
 }
 
 func main() {
@@ -48,6 +49,7 @@ func addCommonFlags(cmd *cobra.Command, opts *commonOptions) {
 	cmd.Flags().IntVar(&opts.glyphSpacing, "spacing", opts.glyphSpacing, "blank columns between glyphs")
 	cmd.Flags().IntVar(&opts.lineSpacing, "line-spacing", opts.lineSpacing, "blank rows between lines")
 	cmd.Flags().IntVar(&opts.cellWidth, "cell-width", opts.cellWidth, "output cell width per glyph, 0 keeps font width")
+	cmd.Flags().BoolVar(&opts.disableWiden, "no-widen", opts.disableWiden, "disable ASCII to full-width conversion")
 }
 
 func loadFont(opts commonOptions) (*hzk.Font, error) {

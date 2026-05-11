@@ -211,6 +211,9 @@ func (f *Font) Bitmap(text string, options ...TextOptions) (Bitmap, error) {
 		glyphs := make([]Bitmap, 0, utf8.RuneCountInString(line))
 		lineWidth := 0
 		for _, r := range line {
+			if !opt.DisableWiden {
+				r = widenRune(r)
+			}
 			glyph, err := f.Glyph(r)
 			if err != nil {
 				return Bitmap{}, err
@@ -277,6 +280,7 @@ func (f *Font) Render(text string, options ...RenderOptions) (string, error) {
 		GlyphSpacing: opt.GlyphSpacing,
 		LineSpacing:  opt.LineSpacing,
 		CellWidth:    opt.CellWidth,
+		DisableWiden: opt.DisableWiden,
 	})
 	if err != nil {
 		return "", err
@@ -291,6 +295,7 @@ func (f *Font) Image(text string, options ...ImageOptions) (image.Image, error) 
 		GlyphSpacing: opt.GlyphSpacing,
 		LineSpacing:  opt.LineSpacing,
 		CellWidth:    opt.CellWidth,
+		DisableWiden: opt.DisableWiden,
 	})
 	if err != nil {
 		return nil, err
@@ -305,4 +310,14 @@ func (f *Font) EncodePNG(w io.Writer, text string, options ...ImageOptions) erro
 		return err
 	}
 	return png.Encode(w, img)
+}
+
+func widenRune(r rune) rune {
+	if r == ' ' {
+		return '\u3000'
+	}
+	if r >= 0x21 && r <= 0x7E {
+		return r + 0xFEE0
+	}
+	return r
 }

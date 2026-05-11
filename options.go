@@ -12,6 +12,9 @@ type TextOptions struct {
 	// A value of 0 keeps the font's native glyph width. A positive value crops
 	// wider glyphs from the right or pads narrower glyphs on the right.
 	CellWidth int
+	// DisableWiden disables the default conversion from printable ASCII
+	// characters to their full-width forms before glyph lookup.
+	DisableWiden bool
 }
 
 // RenderOptions controls how text is rendered to a string.
@@ -28,6 +31,9 @@ type RenderOptions struct {
 	// A value of 0 keeps the font's native glyph width. A positive value crops
 	// wider glyphs from the right or pads narrower glyphs on the right.
 	CellWidth int
+	// DisableWiden disables the default conversion from printable ASCII
+	// characters to their full-width forms before glyph lookup.
+	DisableWiden bool
 }
 
 // ImageOptions controls how text or bitmaps are encoded as images.
@@ -47,6 +53,9 @@ type ImageOptions struct {
 	// CellWidth is the output width of each glyph cell before image scaling.
 	// A value of 0 keeps the font's native glyph width.
 	CellWidth int
+	// DisableWiden disables the default conversion from printable ASCII
+	// characters to their full-width forms before glyph lookup.
+	DisableWiden bool
 }
 
 func mergeTextOptions(options []TextOptions) TextOptions {

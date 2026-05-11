@@ -7,6 +7,7 @@
 - 支持 HZK12：字模高度 12 行，每行按 16 点读取。
 - 支持 HZK16：字模高度 16 行，每行按 16 点读取。
 - 单字默认按 16 点宽度输出，可通过 `CellWidth` 或 `--cell-width` 设置单字输出宽度。
+- 默认将可打印 ASCII 字符转换为全角字符后查找字模，可通过 `DisableWiden` 或 `--no-widen` 关闭。
 - 默认内嵌 HZK12 和 HZK16 字库数据。
 - 支持加载外部 HZK 字库文件。
 - 提供字模、矩阵、文本渲染和 PNG 编码 API。
@@ -33,33 +34,33 @@ go run ./cmd/hzk text --size 16 中文
 package main
 
 import (
- "fmt"
+	"fmt"
 
- "github.com/secriy/go-hzk"
+	"github.com/secriy/go-hzk"
 )
 
 func main() {
- font, err := hzk.New(hzk.HZK16)
- if err != nil {
-  panic(err)
- }
+	font, err := hzk.New(hzk.HZK16)
+	if err != nil {
+		panic(err)
+	}
 
- matrix, err := font.Matrix("中文")
- if err != nil {
-  panic(err)
- }
- fmt.Println(len(matrix), len(matrix[0]))
+	matrix, err := font.Matrix("中文")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(len(matrix), len(matrix[0]))
 
- output, err := font.Render("中文", hzk.RenderOptions{
-  Foreground:   "█",
-  Background:   " ",
-  GlyphSpacing: 1,
-  CellWidth:    12,
- })
- if err != nil {
-  panic(err)
- }
- fmt.Println(output)
+	output, err := font.Render("中文 ABC", hzk.RenderOptions{
+		Foreground:   "█",
+		Background:   " ",
+		GlyphSpacing: 1,
+		CellWidth:    12,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(output)
 }
 ```
 
@@ -68,18 +69,18 @@ func main() {
 ```go
 file, err := os.Create("text.png")
 if err != nil {
- panic(err)
+	panic(err)
 }
 defer file.Close()
 
 err = font.EncodePNG(file, "中文", hzk.ImageOptions{
- Scale:        8,
- Padding:      8,
- GlyphSpacing: 1,
- CellWidth:    12,
+	Scale:        8,
+	Padding:      8,
+	GlyphSpacing: 1,
+	CellWidth:    12,
 })
 if err != nil {
- panic(err)
+	panic(err)
 }
 ```
 
@@ -101,6 +102,12 @@ hzk text --size 12 --fg "#" --bg " " 中文
 
 ```sh
 hzk text --size 12 --cell-width 12 中文
+```
+
+关闭 ASCII 全角转换：
+
+```sh
+hzk text --size 12 --no-widen ＡＢＣ
 ```
 
 从 stdin 读取文本：
@@ -129,7 +136,7 @@ hzk text --size 16 --font ./fonts/HZK16 中文
 
 ## 字符支持
 
-本库使用内嵌 GB2312 映射表定位 HZK 字模，支持 GB2312 汉字和常用全角符号。ASCII 空格会渲染为空白字模；其他 ASCII 字符不会自动转换为全角形式。
+本库使用内嵌 GB2312 映射表定位 HZK 字模，支持 GB2312 汉字和常用全角符号。文本渲染、矩阵生成和图片生成默认会将可打印 ASCII 字符转换为全角形式，例如 `A` 转为 `Ａ`、`1` 转为 `１`。直接调用 `Glyph` 时不会执行该转换。
 
 ## 字库数据
 

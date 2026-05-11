@@ -81,6 +81,7 @@ func writePNG(font *hzk.Font, text string, opts imageOptions, stdout io.Writer) 
 			GlyphSpacing: opts.glyphSpacing,
 			LineSpacing:  opts.lineSpacing,
 			CellWidth:    opts.cellWidth,
+			DisableWiden: opts.disableWiden,
 		})
 	}
 
@@ -98,6 +99,7 @@ func writePNG(font *hzk.Font, text string, opts imageOptions, stdout io.Writer) 
 		GlyphSpacing: opts.glyphSpacing,
 		LineSpacing:  opts.lineSpacing,
 		CellWidth:    opts.cellWidth,
+		DisableWiden: opts.disableWiden,
 	})
 }
 

@@ -118,6 +118,29 @@ func TestCellWidth(t *testing.T) {
 	}
 }
 
+func TestDefaultWiden(t *testing.T) {
+	font, err := New(HZK12)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	matrix, err := font.Matrix("A1!", TextOptions{CellWidth: 12})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(matrix) != 12 {
+		t.Fatalf("matrix height = %d", len(matrix))
+	}
+	if len(matrix[0]) != 36 {
+		t.Fatalf("matrix width = %d", len(matrix[0]))
+	}
+
+	_, err = font.Matrix("A", TextOptions{DisableWiden: true})
+	if !errors.Is(err, ErrUnsupportedRune) {
+		t.Fatalf("expected ErrUnsupportedRune when widen is disabled, got %v", err)
+	}
+}
+
 func TestUnsupportedRune(t *testing.T) {
 	font, err := New(HZK16)
 	if err != nil {
